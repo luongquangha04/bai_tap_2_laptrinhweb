@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tìm kiếm sinh viên</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f2f4f8;
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 700px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      padding: 20px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    #searchInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    #studentTable {
+      display: none; /* Ẩn bảng ban đầu */
+    }
+
+    #message {
+      text-align: center;
+      color: gray;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Tìm kiếm sinh viên</h1>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Nhập tên hoặc mã sinh viên..." />
+      <button id="searchBtn">Tìm</button>
+    </div>
+
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>Mã SV</th>
+          <th>Họ tên</th>
+          <th>Ngành học</th>
+        </tr>
+      </thead>
+      <tbody id="studentList"></tbody>
+    </table>
+
+    <div id="message">Nhập từ khóa để tìm sinh viên...</div>
+  </div>
+
+  <script>
+    // Danh sách sinh viên mẫu
+    const students = [
+      { id: "SV001", name: "Nguyễn Văn A", major: "Công nghệ thông tin" },
+      { id: "SV002", name: "Trần Thị B", major: "Kinh tế" },
+      { id: "SV003", name: "Lê Văn C", major: "Kỹ thuật phần mềm" },
+      { id: "SV004", name: "Phạm Thị D", major: "Thiết kế đồ họa" },
+      { id: "SV005", name: "Hoàng Văn E", major: "Quản trị kinh doanh" },
+    ];
+
+    // Hiển thị danh sách sinh viên tìm thấy
+    function renderStudents(list) {
+      const tbody = document.getElementById("studentList");
+      const table = document.getElementById("studentTable");
+      const message = document.getElementById("message");
+
+      tbody.innerHTML = "";
+
+      if (list.length === 0) {
+        table.style.display = "none";
+        message.textContent = "❌ Không tìm thấy sinh viên nào!";
+        message.style.color = "red";
+        return;
+      }
+
+      // Nếu có kết quả, hiển thị bảng
+      list.forEach((sv) => {
+        const row = `
+          <tr>
+            <td>${sv.id}</td>
+            <td>${sv.name}</td>
+            <td>${sv.major}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+
+      table.style.display = "table";
+      message.textContent = `✅ Tìm thấy ${list.length} sinh viên`;
+      message.style.color = "green";
+    }
+
+    // Hàm tìm kiếm
+    function searchStudent() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+
+      if (keyword === "") {
+        document.getElementById("studentTable").style.display = "none";
+        document.getElementById("message").textContent = "⚠️ Vui lòng nhập từ khóa để tìm kiếm.";
+        document.getElementById("message").style.color = "orange";
+        return;
+      }
+
+      const filtered = students.filter(
+        (sv) =>
+          sv.name.toLowerCase().includes(keyword) ||
+          sv.id.toLowerCase().includes(keyword)
+      );
+
+      renderStudents(filtered);
+    }
+
+    // Khi nhấn nút tìm
+    document.getElementById("searchBtn").addEventListener("click", searchStudent);
+
+    // Cũng có thể nhấn Enter để tìm
+    document.getElementById("searchInput").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") searchStudent();
+    });
+  </script>
+</body>
+</html>
